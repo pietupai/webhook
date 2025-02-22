@@ -4,6 +4,7 @@ const { getCache } = require('./cache');
 const app = express();
 
 app.get('/api/poll', (req, res) => {
+  console.log('Polling endpoint hit'); // Log to ensure the endpoint is hit
   const cache = getCache();
   console.log('Cache accessed:', cache); // Logging to track cache access
   if (!cache.content) {
