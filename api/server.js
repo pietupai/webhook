@@ -1,10 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
+
+// Serve static files from the root directory
+app.use(express.static(path.join(__dirname, '../')));
 
 let cache = {}; // In-memory cache
 let clients = []; // List of SSE clients
