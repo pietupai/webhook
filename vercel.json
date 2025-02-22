@@ -38,7 +38,7 @@
       }
     },
     {
-      "src": "/(.*)",
+      "src": "/index",
       "dest": "/index/index.html",
       "methods": ["GET"],
       "headers": {
