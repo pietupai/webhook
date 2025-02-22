@@ -26,6 +26,23 @@
         "Access-Control-Allow-Methods": "GET",
         "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"
       }
+    },
+    {
+      "src": "/api/sse",
+      "dest": "api/server.js",
+      "methods": ["GET"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html",
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      }
     }
   ]
 }
