@@ -34,8 +34,6 @@
             } else {
               console.error('Message property is undefined');
             }
-          } else {
-            console.log('No new data');
           }
         })
         .catch(error => {
@@ -43,11 +41,14 @@
         });
     }
 
-    // Poll the server every 5 seconds
-    setInterval(pollServer, 5000);
+    // Start polling after a delay to avoid initial 404s
+    setTimeout(() => {
+      // Poll the server every 5 seconds
+      setInterval(pollServer, 5000);
 
-    // Initial poll
-    pollServer();
+      // Initial poll
+      pollServer();
+    }, 5000);
   </script>
 </body>
 </html>
