@@ -14,9 +14,8 @@
     eventSource.onmessage = function(event) {
       try {
         const data = JSON.parse(event.data);
-        console.log("JSON.parse data = ", data);
-        const message = data.content?.message;
-        console.log("data.content?.message = ", message);
+        console.log('Received data:', data); // Log the entire data object
+        const message = data.content ? data.content.message : undefined;
         if (message) {
           document.getElementById('content').innerText = `Message: ${message}`;
         } else {
