@@ -39,5 +39,8 @@
     },
       { "src": "/api/t", "dest": "/api/t.html.html" }
     
-  ]
+  ],
+  {
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
 }
