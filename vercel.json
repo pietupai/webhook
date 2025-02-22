@@ -2,18 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/webhook.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/poll.js",
+      "src": "api/server.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/webhook",
-      "dest": "api/webhook.js",
+      "dest": "api/server.js",
       "methods": ["POST"],
       "headers": {
         "Access-Control-Allow-Origin": "*",
@@ -23,7 +19,7 @@
     },
     {
       "src": "/api/poll",
-      "dest": "api/poll.js",
+      "dest": "api/server.js",
       "methods": ["GET"],
       "headers": {
         "Access-Control-Allow-Origin": "*",
