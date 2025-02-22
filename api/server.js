@@ -28,7 +28,7 @@ app.get('/api/poll', (req, res) => {
   console.log('Cache accessed:', cache); // Logging to track cache access
   if (!cache.content) {
     console.log('No data available in cache');
-    return res.status(404).send('No data available');
+    return res.status(200).send({ message: 'No data available' });
   }
   res.status(200).send(cache);
 });
