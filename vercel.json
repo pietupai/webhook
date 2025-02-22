@@ -38,6 +38,16 @@
       }
     },
     {
+      "src": "/api/t",
+      "dest": "api/t.html",
+      "methods": ["GET"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"
+      }
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html",
       "methods": ["GET"],
