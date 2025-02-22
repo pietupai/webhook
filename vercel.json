@@ -42,12 +42,8 @@
       }
     },
     {
-      "src": "/((?!.*\\.\\w+$).*)",
-      "dest": "/api/server.js"
-    },
-    {
-      "src": "/(.+\\.[a-z]+)$",
-      "dest": "/public/$1"
+      "src": "/",
+      "dest": "/public/index.html"
     }
   ]
 }
