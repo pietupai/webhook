@@ -37,9 +37,6 @@
         "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"
       }
     },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+
   ]
 }
