@@ -37,7 +37,7 @@
         "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"
       }
     },
-      { "src": "/api/t", "dest": "/api/t.html.html" }
+      { "src": "/api/t", "dest": "/api/t.html" }
     
   ],
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
