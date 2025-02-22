@@ -38,15 +38,6 @@
       }
     },
       { "src": "/", "dest": "/api/t.html.html" },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html",
-      "methods": ["GET"],
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET",
-        "Access-Control-Allow-Headers": "Content-Type"
-      }
-    }
+    
   ]
 }
