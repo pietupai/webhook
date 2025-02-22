@@ -2,30 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SSE Example</title>
+  <title>Polling Example</title>
 </head>
 <body>
-  <h1>Server-Sent Events Example</h1>
+  <h1>Polling Example</h1>
   <div id="content">No data yet</div>
 
   <script>
-    const eventSource = new EventSource('/api/sse');
+    function pollServer() {
+      fetch('/api/poll')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Received data:', data); // Log the entire data object
+          const message = data.content ? data.content.message : undefined;
+          if (message) {
+            document.getElementById('content').innerText = `Message: ${message}`;
+          } else {
+            console.error('Message property is undefined');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    }
 
-    eventSource.onmessage = function(event) {
-      try {
-        const data = JSON.parse(event.data);
-        console.log('Received data:', data); // Log the entire data object
-        const message = data.content ? data.content.message : undefined;
-        if (message) {
-          document.getElementById('content').innerText = `Message: ${message}`;
-        } else {
-          console.error('Message property is undefined');
-        }
-      } catch (error) {
-        console.error('Error parsing event data:', error);
-        console.error('Event data:', event.data);
-      }
-    };
+    // Poll the server every 5 seconds
+    setInterval(pollServer, 5000);
+
+    // Initial poll
+    pollServer();
   </script>
 </body>
 </html>
