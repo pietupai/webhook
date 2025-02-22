@@ -39,10 +39,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html",
-      "headers": {
-        "Access-Control-Allow-Origin": "*"
-      }
+      "dest": "/index.html"
     }
   ]
 }
