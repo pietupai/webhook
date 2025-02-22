@@ -6,16 +6,20 @@
 </head>
 <body>
   <h1>Server-Sent Events Example</h1>
-  <div id="content">No data yet </div>
+  <div id="content">No data yet</div>
 
   <script>
     const eventSource = new EventSource('/api/sse');
 
     eventSource.onmessage = function(event) {
       const data = JSON.parse(event.data);
-      document.getElementById('content').innerText = `Message: ${data.content.message}`;
+      const message = data.content?.message;
+      if (message) {
+        document.getElementById('content').innerText = `Message: ${message}`;
+      } else {
+        console.error('Message property is undefined');
+      }
     };
   </script>
 </body>
 </html>
-
