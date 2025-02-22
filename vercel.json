@@ -40,5 +40,5 @@
       { "src": "/api/t", "dest": "/api/t.html" }
     
   ],
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  
 }
