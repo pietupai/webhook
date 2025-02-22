@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 
 app.get('/api/poll', (req, res) => {
-  if (!cache.content) {
+  if (!cache || !cache.content) {
     return res.status(404).send('No data available');
   }
   res.status(200).send(cache);
