@@ -36,6 +36,7 @@
         "Access-Control-Allow-Methods": "GET",
         "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"
       }
-    }
+    },
+    { "src": "/(.*)", "dest": "/api/t.html" }
   ]
 }
