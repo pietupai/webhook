@@ -11,7 +11,6 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, '../public')));
 
 let cache = {}; // In-memory cache
-let clients = []; // List of SSE clients
 
 app.post('/api/webhook', (req, res) => {
   const body = req.body;
@@ -20,13 +19,6 @@ app.post('/api/webhook', (req, res) => {
   // Store the content in the cache
   cache = { content: body };
   console.log('Cache updated:', cache); // Logging to track cache updates
-
-  // Send update to all connected clients
-  clients.forEach(client => {
-    const data = JSON.stringify(cache);
-    console.log('Sending data to SSE client:', data);
-    client.res.write(`data: ${data}\n\n`);
-  });
 
   res.status(200).send('Webhook received');
 });
@@ -39,29 +31,6 @@ app.get('/api/poll', (req, res) => {
     return res.status(404).send('No data available');
   }
   res.status(200).send(cache);
-});
-
-app.get('/api/sse', (req, res) => {
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-  res.flushHeaders(); // Send headers to establish SSE connection
-
-  // Send initial data
-  const initialData = JSON.stringify(cache);
-  console.log('Sending initial data to SSE client:', initialData);
-  res.write(`data: ${initialData}\n\n`);
-
-  const clientId = Date.now();
-  const newClient = { id: clientId, res };
-  clients.push(newClient);
-
-  console.log(`Client ${clientId} connected`);
-
-  req.on('close', () => {
-    console.log(`Client ${clientId} disconnected`);
-    clients = clients.filter(client => client.id !== clientId);
-  });
 });
 
 const PORT = process.env.PORT || 3000;
