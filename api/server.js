@@ -7,8 +7,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-// Serve static files from the root directory
-app.use(express.static(path.join(__dirname, '../')));
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, '../public')));
 
 let cache = {}; // In-memory cache
 let clients = []; // List of SSE clients
@@ -22,7 +22,11 @@ app.post('/api/webhook', (req, res) => {
   console.log('Cache updated:', cache); // Logging to track cache updates
 
   // Send update to all connected clients
-  clients.forEach(client => client.res.write(`data: ${JSON.stringify(cache)}\n\n`));
+  clients.forEach(client => {
+    const data = JSON.stringify(cache);
+    console.log('Sending data to SSE client:', data);
+    client.res.write(`data: ${data}\n\n`);
+  });
 
   res.status(200).send('Webhook received');
 });
@@ -44,7 +48,9 @@ app.get('/api/sse', (req, res) => {
   res.flushHeaders(); // Send headers to establish SSE connection
 
   // Send initial data
-  res.write(`data: ${JSON.stringify(cache)}\n\n`);
+  const initialData = JSON.stringify(cache);
+  console.log('Sending initial data to SSE client:', initialData);
+  res.write(`data: ${initialData}\n\n`);
 
   const clientId = Date.now();
   const newClient = { id: clientId, res };
@@ -56,11 +62,6 @@ app.get('/api/sse', (req, res) => {
     console.log(`Client ${clientId} disconnected`);
     clients = clients.filter(client => client.id !== clientId);
   });
-});
-
-// Serve the index.html file
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../index.html'));
 });
 
 const PORT = process.env.PORT || 3000;
