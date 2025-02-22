@@ -4,7 +4,7 @@ const { getCache } = require('./cache');
 const app = express();
 
 app.get('/api/poll', (req, res) => {
-  //const cache = getCache();
+  const cache = getCache();
   console.log('Cache accessed:', cache); // Logging to track cache access
   if (!cache.content) {
     return res.status(404).send('No data available');
