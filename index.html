@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Polling Example</title>
+</head>
+<body>
+  <h1>Polling Example</h1>
+  <div id="content">No data yet</div>
+
+  <script>
+    let lastData = null;
+
+    function pollServer() {
+      fetch('/api/poll')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.message === 'No data available') {
+            console.log('No data available in cache');
+            return;
+          }
+          if (data && JSON.stringify(data) !== JSON.stringify(lastData)) {
+            console.log('Received new data:', data); // Log the entire data object
+            const message = data.content ? data.content.message : undefined;
+            if (message) {
+              document.getElementById('content').innerText = `Message: ${message}`;
+              lastData = data; // Update lastData with the new data
+            } else {
+              console.error('Message property is undefined');
+            }
+          } else {
+            console.log('No new data');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    }
+
+    // Poll the server every 5 seconds
+    setInterval(pollServer, 5000);
+
+    // Initial poll
+    pollServer();
+  </script>
+</body>
+</html>
