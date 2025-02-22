@@ -14,17 +14,16 @@
     function pollServer() {
       fetch('/api/poll')
         .then(response => {
-          if (response.status === 404) {
-            // No data available, handle gracefully
-            console.log('No data available in cache');
-            return null;
-          }
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
           return response.json();
         })
         .then(data => {
+          if (data.message === 'No data available') {
+            console.log('No data available in cache');
+            return;
+          }
           if (data && JSON.stringify(data) !== JSON.stringify(lastData)) {
             console.log('Received new data:', data); // Log the entire data object
             const message = data.content ? data.content.message : undefined;
@@ -34,6 +33,8 @@
             } else {
               console.error('Message property is undefined');
             }
+          } else {
+            console.log('No new data');
           }
         })
         .catch(error => {
@@ -41,14 +42,11 @@
         });
     }
 
-    // Start polling after a delay to avoid initial 404s
-    setTimeout(() => {
-      // Poll the server every 5 seconds
-      setInterval(pollServer, 5000);
+    // Poll the server every 5 seconds
+    setInterval(pollServer, 5000);
 
-      // Initial poll
-      pollServer();
-    }, 5000);
+    // Initial poll
+    pollServer();
   </script>
 </body>
 </html>
