@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
-const fetch = require('node-fetch');
-//const events = require('events');
+//const fetch = require('node-fetch');
+const events = require('events');
 
 const app = express();
 app.use(bodyParser.json());
