@@ -33,8 +33,9 @@ app.post('/api/webhook', (req, res) => {
 
   // Emit event with the updated content
   console.log('Emitting event: newWebhook');
-  const decodedContent = Buffer.from(body, 'base64').toString('utf8');
-  eventEmitter.emit('newWebhook', decodedContent);
+  //const decodedContent = Buffer.from(body, 'base64').toString('utf8');
+  //eventEmitter.emit('newWebhook', decodedContent);
+  eventEmitter.emit('newWebhook', "testi123");
 
   res.status(200).send('Webhook received');
 });
