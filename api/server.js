@@ -65,7 +65,7 @@ app.get('/api/sse', (req, res) => {
   //eventEmitter.on('newWebhook', listener);
 
   req.on('close', () => {
-    //clearInterval(keepAlive);
+    clearInterval(keepAlive);
     //eventEmitter.removeListener('newWebhook', listener);
     console.log('SSE connection closed');
   });
