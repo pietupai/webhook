@@ -11,7 +11,7 @@ app.use(cors());
 
 let cache = {}; // In-memory cache
 
-const eventEmitter = new events.EventEmitter();
+//const eventEmitter = new events.EventEmitter();
 
 // Serve static files : tarvitaan että index.html toimii myös local
 //app.use(express.static(path.join(__dirname, '../public')));   // from 'public' directory
@@ -27,13 +27,13 @@ app.post('/api/webhook', async (req, res) => {
   console.log('Cache updated:', cache); // Logging to track cache updates
 
   // Fetch the updated response.txt content
-  const response = await fetch('https://api.github.com/repos/pietupai/hae/contents/response.txt');
-  const data = await response.json();
-  const decodedContent = Buffer.from(data.content, 'base64').toString('utf8');
+  //const response = await fetch('https://api.github.com/repos/pietupai/hae/contents/response.txt');
+  //const data = await response.json();
+  //const decodedContent = Buffer.from(data.content, 'base64').toString('utf8');
 
   // Emit event with the updated content
   console.log('Emitting event: newWebhook');
-  eventEmitter.emit('newWebhook', decodedContent);
+  //eventEmitter.emit('newWebhook', decodedContent);
 
   res.status(200).send('Webhook received');
 });
