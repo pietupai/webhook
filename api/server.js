@@ -34,6 +34,7 @@ app.post('/api/webhook', (req, res) => {
   // Emit event with the updated content
   console.log('Emitting event: newWebhook');
   //eventEmitter.emit('newWebhook', decodedContent);
+  eventEmitter.emit('newWebhook', body);
 
   res.status(200).send('Webhook received');
 });
@@ -63,7 +64,7 @@ app.get('/api/sse', (req, res) => {
     res.write(`data: ${data}\n\n`);
   };
 
-  //eventEmitter.on('newWebhook', listener);
+  eventEmitter.on('newWebhook', listener);
 
   req.on('close', () => {
     //clearInterval(keepAlive);
