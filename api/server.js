@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 //const fetch = require('node-fetch');
-const events = require('events');
+//const events = require('events');
 
 const app = express();
 app.use(bodyParser.json());
@@ -60,10 +60,7 @@ app.get('/api/sse', (req, res) => {
 
   //const keepAlive = setInterval(() => { res.write(': keep-alive\n\n'); console.log('Keep-alive message sent'); }, 15000);
 
-  const listener = (data) => {
-    console.log('Sending data to SSE client:', data);
-    res.write(`data: ${data}\n\n`);
-  };
+  //const listener = (data) => { console.log('Sending data to SSE client:', data); res.write(`data: ${data}\n\n`);  };
 
   //eventEmitter.on('newWebhook', listener);
 
