@@ -16,7 +16,8 @@ const eventEmitter = new events.EventEmitter();
 //app.use(express.static(path.join(__dirname, '../public')));   // from 'public' directory
 app.use(express.static(path.join(__dirname, '../')));        // from root     
 
-app.post('/api/webhook', (req, res) => {
+//app.post('/api/webhook', (req, res) => {
+app.post('/api/webhook', async (req, res) => {
   const body = req.body;
   console.log('Webhook event received:', body);
 
