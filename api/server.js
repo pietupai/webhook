@@ -9,9 +9,9 @@ app.use(cors());
 
 let cache = {}; // In-memory cache
 
-// Serve static files from the 'public' directory
-//app.use(express.static(path.join(__dirname, '../public')));
-app.use(express.static(path.join(__dirname, '../')));
+// Serve static files : tarvitaan että index.html toimii myös local
+//app.use(express.static(path.join(__dirname, '../public')));   // from 'public' directory
+app.use(express.static(path.join(__dirname, '../')));        // from root     
 
 app.post('/api/webhook', (req, res) => {
   const body = req.body;
