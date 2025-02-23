@@ -11,7 +11,7 @@ app.use(cors());
 
 let cache = {}; // In-memory cache
 
-//const eventEmitter = new events.EventEmitter();
+//const eventEmitter = new events.EventEmitter();  
 
 // Serve static files : tarvitaan että index.html toimii myös local
 //app.use(express.static(path.join(__dirname, '../public')));   // from 'public' directory
