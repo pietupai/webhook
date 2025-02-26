@@ -63,7 +63,9 @@ app.get('/api/sse', (req, res) => {
 
   const listener = (data) => {
     console.log('Sending data to SSE client:', data);
-    res.write(`data: ${data}\n\n`);
+    // Convert object to JSON string before sending
+    const jsonData = JSON.stringify(data);
+    res.write(`data: ${jsonData}\n\n`);
   };
 
   // Attach listener to cache updates
