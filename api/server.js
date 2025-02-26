@@ -48,7 +48,7 @@ app.get('/api/sse', (req, res) => {
 
   const sendData = () => {
     if (!cache.content) {
-        res.write(`data: No data available'\n\n`);
+        res.write("data: No data available\n\n");
         console.log('Cache content not available');
     } else {
         const data = JSON.stringify(cache);
