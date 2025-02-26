@@ -60,6 +60,8 @@ app.get('/api/sse', (req, res) => {
 
   eventEmitter.on('newWebhook', sendData);
 
+  if (cache.content) { sendData };
+
   req.on('close', () => {
     clearInterval(keepAlive);
     eventEmitter.removeListener('newWebhook', sendData);
