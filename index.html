@@ -21,10 +21,10 @@
           return;
         }
 
-        const message = data.content && (data.content.message || data.content.key) ? (data.content.message || data.content.key) : undefined;
+        const message = data.content ? data.content : undefined;
 
         if (message) {
-          document.getElementById('content').innerText = `Message: ${message}`;
+          document.getElementById('content').innerText = `Message: ${JSON.stringify(message)}`;
         } else {
           console.error('Message property is undefined or data structure is unexpected:', data);
         }
