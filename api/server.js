@@ -23,17 +23,17 @@ app.post('/api/webhook', (req, res) => {
   cache = { content: body };
   console.log('Cache updated:', cache); // Logging to track cache updates 
 
-  // Emit event with the updated content
-  console.log('Emitting event: newWebhook');
-  const decodedContent = JSON.stringify(req.body);
-  console.log("Emitting text: ", decodedContent);
-  eventEmitter.emit('newWebhook', decodedContent);
-
   const listener = (data) => {
     console.log('Got event data:', data);
     //res.write(`data: ${data}\n\n`);
   };
   eventEmitter.on('newWebhook', listener);
+
+  // Emit event with the updated content
+  console.log('Emitting event: newWebhook');
+  const decodedContent = JSON.stringify(req.body);
+  console.log("Emitting text: ", decodedContent);
+  eventEmitter.emit('newWebhook', decodedContent);
 
   res.status(200).send('Webhook received');
 });
