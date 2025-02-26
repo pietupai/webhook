@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, '../')));   // from root
 
 let cache = {}; // In-memory cache
-const eventEmitter = new events.EventEmitter();
+let eventEmitter = new events.EventEmitter();
 
 app.post('/api/webhook', (req, res) => {
   const body = req.body;
