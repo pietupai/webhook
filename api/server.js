@@ -66,15 +66,15 @@ app.get('/api/sse', (req, res) => {
         console.log('Cache content not available');
     } else {
         const data = JSON.stringify(cache);
-        console.log('Sending data to SSE client:', data);
-        res.write(`data: ${data}\n\n`);
-        LastData = data;
+        if (data != LastData) {
+          console.log('Sending data to SSE client:', data);
+          res.write(`data: ${data}\n\n`);
+          LastData = data;
+        };
         //cache = {};
     }
   };
     
-
-
   // Poll the server every 5 seconds
   const pollInterval = setInterval(sendData, 5000);
 
