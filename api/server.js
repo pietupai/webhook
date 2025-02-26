@@ -14,6 +14,7 @@ app.use(express.static(path.join(__dirname, '../')));
 let cache = {}; // In-memory cache
 const eventEmitter = new events.EventEmitter();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function Odota(milliseconds) {  await sleep(milliseconds) };
 
 app.post('/api/webhook', (req, res) => {
   const body = req.body;
@@ -43,7 +44,8 @@ app.get('/api/poll', (req, res) => {
   });
   sendData();
   //await sleep(20000);
-  (async () => await new Promise(resolve => setTimeout(resolve, 600000)))();
+  //(async () => await new Promise(resolve => setTimeout(resolve, 600000)))();
+  Odota(60000);
   console.log('Polling exit');
 });
 
