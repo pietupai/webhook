@@ -47,14 +47,17 @@ app.get('/api/sse', (req, res) => {
   }, 5000); // Reduce interval to keep connection alive
 
   const sendData = () => {
-    if (cache.content) {
-      const data = JSON.stringify(cache);
-      console.log('Sending data to SSE client:', data);
-      res.write(`data: ${data}\n\n`);
+    if (!cache.content) {
+        res.write(`data: No data available'\n\n`);
+        console.log('Cache content not available');
     } else {
-      console.log('Cache content not available');
+        const data = JSON.stringify(cache);
+        console.log('Sending data to SSE client:', data);
+        res.write(`data: ${data}\n\n`);
     }
   };
+    
+
 
   // Poll the server every 5 seconds
   const pollInterval = setInterval(sendData, 5000);
