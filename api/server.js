@@ -31,6 +31,7 @@ app.get('/api/poll', (req, res) => {
     return res.status(200).send({ message: 'No data available' });
   }
   res.status(200).send(cache);
+  cache = {};
 });
 
 // SSE endpoint with internal polling
@@ -54,6 +55,7 @@ app.get('/api/sse', (req, res) => {
         const data = JSON.stringify(cache);
         console.log('Sending data to SSE client:', data);
         res.write(`data: ${data}\n\n`);
+        cache = {};
     }
   };
     
