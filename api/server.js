@@ -27,10 +27,20 @@ app.post('/api/webhook', (req, res) => {
 
 app.get('/api/poll', (req, res) => {
   console.log('Polling endpoint hit');
-  if (!cache.content) {
-    return res.status(200).send({ message: 'No data available' });
-  }
-  res.status(200).send(cache);
+  const sendData = () => {
+    if (!cache.content) {
+      return res.status(200).send({ message: 'No data available' });
+    }
+    res.status(200).send(cache);
+  };
+  // Poll the server every 5 seconds
+  const pollInterval = setInterval(sendData, 5000);
+  req.on('close', () => {
+    clearInterval(pollInterval);
+    console.log('Connection closed');
+  });
+  sendData();
+
 });
 
 // SSE endpoint with internal polling
