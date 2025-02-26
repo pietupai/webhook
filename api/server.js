@@ -51,7 +51,7 @@ app.get('/api/sse', (req, res) => {
         res.write("message: No data available\n\n");
         console.log('Cache content not available');
     } else {
-        const data = cache;
+        const data = JSON.stringify(cache);
         console.log('Sending data to SSE client:', data);
         res.write(`data: ${data}\n\n`);
     }
