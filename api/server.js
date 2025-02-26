@@ -13,9 +13,8 @@ app.use(express.static(path.join(__dirname, '../')));
 
 let cache = {}; // In-memory cache
 const eventEmitter = new events.EventEmitter();
-//const sleep = ms => new Promise(r => setTimeout(r, ms));
-function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
-async function Odota(milliseconds) {  await sleep(milliseconds) };
+//function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+//async function Odota(milliseconds) {  await sleep(milliseconds) };
 
 app.post('/api/webhook', (req, res) => {
   const body = req.body;
@@ -39,15 +38,13 @@ app.get('/api/poll', (req, res) => {
     }
   };
   // Poll the server every 5 seconds
-  const pollInterval = setInterval(sendData, 5000);
+  const pollInterval = setInterval(sendData, 1000);
   req.on('close', () => {
     clearInterval(pollInterval);
     console.log('Connection closed');
   });
   sendData();
-  //await sleep(20000);
-  //(async () => await new Promise(resolve => setTimeout(resolve, 600000)))();
-  Odota(30000);
+  //Odota(30000);
   console.log('Polling exit');
 });
 
