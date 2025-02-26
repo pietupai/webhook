@@ -60,7 +60,10 @@ app.get('/api/sse', (req, res) => {
 
   eventEmitter.on('newWebhook', sendData);
 
-  if (cache.content) { sendData };
+  if (cache.content) { 
+    console.log('Cache data found');
+    sendData 
+  };
 
   req.on('close', () => {
     clearInterval(keepAlive);
