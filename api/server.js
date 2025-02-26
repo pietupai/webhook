@@ -37,16 +37,14 @@ app.get('/api/poll', (req, res) => {
 
 // SSE endpoint with internal polling
 app.get('/api/sse', (req, res) => {
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-  res.flushHeaders();
+  //res.setHeader('Content-Type', 'text/event-stream');
+  //res.setHeader('Cache-Control', 'no-cache');
+  //res.setHeader('Connection', 'keep-alive');
+  //res.flushHeaders();
 
   console.log('SSE connection established');
 
-  const keepAlive = setInterval(() => {
-    res.write(': keep-alive\n\n');
-  }, 5000); // Reduce interval to keep connection alive
+  //const keepAlive = setInterval(() => { res.write(': keep-alive\n\n'); }, 15000); // Reduce interval to keep connection alive
 
   const sendData = () => {
     if (!cache.content) {
@@ -66,7 +64,7 @@ app.get('/api/sse', (req, res) => {
   const pollInterval = setInterval(sendData, 5000);
 
   req.on('close', () => {
-    clearInterval(keepAlive);
+    //clearInterval(keepAlive);
     clearInterval(pollInterval);
     console.log('SSE connection closed');
   });
