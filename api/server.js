@@ -13,6 +13,7 @@ app.use(express.static(path.join(__dirname, '../')));
 
 let cache = {}; // In-memory cache
 const eventEmitter = new events.EventEmitter();
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 app.post('/api/webhook', (req, res) => {
   const body = req.body;
@@ -41,7 +42,7 @@ app.get('/api/poll', (req, res) => {
     console.log('Connection closed');
   });
   sendData();
-  await new Promise(r => setTimeout(r, 20000));
+  await sleep(20000);
   console.log('Polling exit');
 });
 
