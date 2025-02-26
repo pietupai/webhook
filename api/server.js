@@ -1,3 +1,4 @@
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -7,45 +8,47 @@ const events = require('events');
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname, '../'))); // Serve static files from root
 
-class Cache {
-  constructor() {
-    this._content = null;
-    this.eventEmitter = new events.EventEmitter();
-  }
+// Serve static files : tarvitaan local index.html 
+//app.use(express.static(path.join(__dirname, '../public')));  //  from the 'public' directory
+app.use(express.static(path.join(__dirname, '../')));   // from root
 
-  get content() {
-    return this._content;
-  }
-
-  set content(value) {
-    this._content = value;
-    this.eventEmitter.emit('cacheUpdated', this._content);
-  }
-}
-
-const cache = new Cache();
+let cache = {}; // In-memory cache
+const eventEmitter = new events.EventEmitter();
 
 app.post('/api/webhook', (req, res) => {
   const body = req.body;
   console.log('Webhook event received:', body);
 
-  // Store the content in the cache (this will trigger the event)
-  cache.content = body;
-  console.log('Cache updated:', cache.content); // Logging to track cache updates
+  // Store the content in the cache
+  cache = { content: body };
+  console.log('Cache updated:', cache); // Logging to track cache updates 
+
+  const listener = (data) => {
+    console.log('Got event data:', data);
+    //res.write(`data: ${data}\n\n`);
+  };
+  eventEmitter.removeAllListeners('newWebhook2');
+  eventEmitter.on('newWebhook2', listener);
+
+  // Emit event with the updated content
+  console.log('Emitting event: newWebhook');
+  const decodedContent = JSON.stringify(req.body);
+  console.log("Emitting text: ", decodedContent);
+  eventEmitter.emit('newWebhook', decodedContent);
+  eventEmitter.emit('newWebhook2', decodedContent);
 
   res.status(200).send('Webhook received');
 });
 
 app.get('/api/poll', (req, res) => {
   console.log('Polling endpoint hit'); // Log to ensure the endpoint is hit
-  console.log('Cache accessed:', cache.content); // Logging to track cache access
+  console.log('Cache accessed:', cache); // Logging to track cache access
   if (!cache.content) {
     console.log('No data available in cache');
     return res.status(200).send({ message: 'No data available' });
   }
-  res.status(200).send(cache.content);
+  res.status(200).send(cache);
 });
 
 // SSE endpoint
@@ -56,22 +59,19 @@ app.get('/api/sse', (req, res) => {
 
   console.log('SSE connection established');
 
-  const keepAlive = setInterval(() => {
-    res.write(': keep-alive\n\n');
-    console.log('Keep-alive message sent');
-  }, 15000);
+  const keepAlive = setInterval(() => {  res.write(': keep-alive\n\n'); console.log('Keep-alive message sent'); }, 15000);
 
   const listener = (data) => {
     console.log('Sending data to SSE client:', data);
     res.write(`data: ${data}\n\n`);
   };
 
-  // Attach listener to cache updates
-  cache.eventEmitter.on('cacheUpdated', listener);
+  eventEmitter.removeAllListeners('newWebhook');
+  eventEmitter.on('newWebhook', listener);
 
   req.on('close', () => {
     clearInterval(keepAlive);
-    cache.eventEmitter.removeListener('cacheUpdated', listener);
+    eventEmitter.removeListener('newWebhook', listener);
     console.log('SSE connection closed');
   });
 });
