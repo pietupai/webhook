@@ -44,7 +44,7 @@ app.get('/api/sse', (req, res) => {
 
   const keepAlive = setInterval(() => {
     res.write(': keep-alive\n\n');
-  }, 5000); // Reduce interval to keep connection alive
+  }, 15000); // Reduce interval to keep connection alive
 
   // Function to poll the server and send updates to the client
   const pollServer = () => {
@@ -57,7 +57,7 @@ app.get('/api/sse', (req, res) => {
   };
 
   // Poll the server every 5 seconds
-  const pollInterval = setInterval(pollServer, 1000);
+  const pollInterval = setInterval(pollServer, 10000);
 
   req.on('close', () => {
     clearInterval(keepAlive);
