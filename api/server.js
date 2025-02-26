@@ -13,7 +13,8 @@ app.use(express.static(path.join(__dirname, '../')));
 
 let cache = {}; // In-memory cache
 const eventEmitter = new events.EventEmitter();
-const sleep = ms => new Promise(r => setTimeout(r, ms));
+//const sleep = ms => new Promise(r => setTimeout(r, ms));
+function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 async function Odota(milliseconds) {  await sleep(milliseconds) };
 
 app.post('/api/webhook', (req, res) => {
