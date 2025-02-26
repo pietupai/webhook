@@ -34,8 +34,11 @@ app.get('/api/poll', (req, res) => {
     if (!cache.content) {
       //res.status(200).send({ message: 'No data available' });
     } else {
-      res.status(200).send(cache);
-      cache = {};
+      if (data != LastData) {
+        res.status(200).send(cache);
+        LastData = data;
+      };
+      //cache = {};
     }
   };
   // Poll the server every 5 seconds
