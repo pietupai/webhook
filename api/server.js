@@ -8,7 +8,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use(express.static(path.join(__dirname, '../')));   // from root
+// Serve static files from the root directory
+app.use(express.static(path.join(__dirname, '../')));
 
 let cache = {}; // In-memory cache
 const eventEmitter = new events.EventEmitter();
@@ -22,9 +23,7 @@ app.post('/api/webhook', (req, res) => {
   console.log('Cache updated:', cache);
 
   // Emit event with the updated content
-  console.log('Emitting event: newWebhook');
-  const decodedContent = JSON.stringify(req.body);
-  console.log("Emitting text: ", decodedContent);
+  const decodedContent = JSON.stringify({ content: body });
   eventEmitter.emit('newWebhook', decodedContent);
 
   res.status(200).send('Webhook received');
@@ -32,9 +31,7 @@ app.post('/api/webhook', (req, res) => {
 
 app.get('/api/poll', (req, res) => {
   console.log('Polling endpoint hit');
-  console.log('Cache accessed:', cache);
   if (!cache.content) {
-    console.log('No data available in cache');
     return res.status(200).send({ message: 'No data available' });
   }
   res.status(200).send(cache);
@@ -51,10 +48,9 @@ app.get('/api/sse', (req, res) => {
 
   const keepAlive = setInterval(() => {
     res.write(': keep-alive\n\n');
-    console.log('Keep-alive message sent');
   }, 15000);
 
-  const listener = () => {
+  const sendData = () => {
     if (cache.content) {
       const data = JSON.stringify(cache);
       console.log('Sending data to SSE client:', data);
@@ -62,13 +58,16 @@ app.get('/api/sse', (req, res) => {
     }
   };
 
-  eventEmitter.on('newWebhook', listener);
+  eventEmitter.on('newWebhook', sendData);
 
   req.on('close', () => {
     clearInterval(keepAlive);
-    eventEmitter.removeListener('newWebhook', listener);
+    eventEmitter.removeListener('newWebhook', sendData);
     console.log('SSE connection closed');
   });
+
+  // Send initial data if available
+  sendData();
 });
 
 const PORT = process.env.PORT || 3000;
