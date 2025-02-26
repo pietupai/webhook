@@ -10,7 +10,7 @@
 
   <script>
     function startEventSource() {
-      const eventSource = new EventSource('/api/poll');
+      const eventSource = new EventSource('/api/sse');
 
       eventSource.onmessage = function(event) {
         const data = JSON.parse(event.data);
