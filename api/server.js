@@ -43,7 +43,7 @@ app.get('/api/poll', (req, res) => {
   });
   sendData();
   //await sleep(20000);
-  (async () => await new Promise(resolve => setTimeout(resolve, 60000)))();
+  (async () => await new Promise(resolve => setTimeout(resolve, 600000)))();
   console.log('Polling exit');
 });
 
