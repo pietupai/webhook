@@ -29,12 +29,12 @@ app.post('/api/webhook', (req, res) => {
 
 app.get('/api/poll', (req, res) => {
   console.log('Polling endpoint hit'); // Log to ensure the endpoint is hit
-  console.log('Cache accessed:', cache.content); // Logging to track cache access
+  console.log('Cache accessed:', cache); // Logging to track cache access
   if (!cache.content) {
     console.log('No data available in cache');
     return res.status(200).send({ message: 'No data available' });
   }
-  res.status(200).send(cache.content);
+  res.status(200).send(cache);
 });
 
 // SSE endpoint
