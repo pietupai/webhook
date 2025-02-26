@@ -15,7 +15,7 @@ let cache = {}; // In-memory cache
 const eventEmitter = new events.EventEmitter();
 //function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 //async function Odota(milliseconds) {  await sleep(milliseconds) };
-const LastData = "x";
+let LastData = "x";
 
 app.post('/api/webhook', (req, res) => {
   const body = req.body;
