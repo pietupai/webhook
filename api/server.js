@@ -22,10 +22,6 @@ app.post('/api/webhook', (req, res) => {
   cache = { content: body };
   console.log('Cache updated:', cache); // Logging to track cache updates
 
-  // Emit event with the updated content
-  const decodedContent = JSON.stringify(cache);
-  eventEmitter.emit('newWebhook', decodedContent);
-
   res.status(200).send('Webhook received');
 });
 
@@ -37,7 +33,7 @@ app.get('/api/poll', (req, res) => {
   res.status(200).send(cache);
 });
 
-// SSE endpoint
+// SSE endpoint with internal polling
 app.get('/api/sse', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
@@ -48,9 +44,11 @@ app.get('/api/sse', (req, res) => {
 
   const keepAlive = setInterval(() => {
     res.write(': keep-alive\n\n');
-  }, 15000);
+  }, 5000); // Reduce interval to keep connection alive
 
-  const sendData = () => {
+  // Function to poll the server and send updates to the client
+  const pollServer = () => {
+    console.log('Polling internally for updates');
     if (cache.content) {
       const data = JSON.stringify(cache);
       console.log('Sending data to SSE client:', data);
@@ -58,21 +56,17 @@ app.get('/api/sse', (req, res) => {
     }
   };
 
-  eventEmitter.on('newWebhook', sendData);
-
-  if (cache.content) { 
-    console.log('Cache data found');
-    sendData 
-  };
+  // Poll the server every 5 seconds
+  const pollInterval = setInterval(pollServer, 1000);
 
   req.on('close', () => {
     clearInterval(keepAlive);
-    eventEmitter.removeListener('newWebhook', sendData);
+    clearInterval(pollInterval);
     console.log('SSE connection closed');
   });
 
-  // Send initial data if available and valid
-  sendData();
+  // Send initial data if available
+  pollServer();
 });
 
 const PORT = process.env.PORT || 3000;
