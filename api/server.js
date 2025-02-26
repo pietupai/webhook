@@ -69,7 +69,7 @@ app.get('/api/sse', (req, res) => {
         const data = JSON.stringify(cache);
         console.log('Sending data to SSE client:', data);
         res.write(`data: ${data}\n\n`);
-        cache = {};
+        //cache = {};
     }
   };
     
