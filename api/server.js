@@ -29,9 +29,10 @@ app.get('/api/poll', (req, res) => {
   console.log('Polling endpoint hit');
   const sendData = () => {
     if (!cache.content) {
-      return res.status(200).send({ message: 'No data available' });
+      res.status(200).send({ message: 'No data available' });
+    } else {
+      res.status(200).send(cache);
     }
-    res.status(200).send(cache);
   };
   // Poll the server every 5 seconds
   const pollInterval = setInterval(sendData, 5000);
