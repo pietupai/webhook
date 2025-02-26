@@ -19,14 +19,8 @@ app.post('/api/webhook', (req, res) => {
   console.log('Webhook event received:', body);
 
   // Store the content in the cache
-  if (body.message) {
-    cache = { content: { message: body.message } };
-  } else if (body.key) {
-    cache = { content: { message: body.key } };
-  } else {
-    cache = { content: { message: 'No message content' } };
-  }
-  console.log('Cache updated:', cache);
+  cache = { content: body };
+  console.log('Cache updated:', cache); // Logging to track cache updates
 
   // Emit event with the updated content
   const decodedContent = JSON.stringify(cache);
@@ -57,7 +51,7 @@ app.get('/api/sse', (req, res) => {
   }, 15000);
 
   const sendData = () => {
-    if (cache.content && cache.content.message !== 'No message content') {
+    if (cache.content) {
       const data = JSON.stringify(cache);
       console.log('Sending data to SSE client:', data);
       res.write(`data: ${data}\n\n`);
