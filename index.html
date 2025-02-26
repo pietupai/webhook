@@ -21,7 +21,7 @@
           return;
         }
 
-        const message = data.content && data.content.message ? data.content.message : undefined;
+        const message = data.content && (data.content.message || data.content.key) ? (data.content.message || data.content.key) : undefined;
 
         if (message) {
           document.getElementById('content').innerText = `Message: ${message}`;
