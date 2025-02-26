@@ -27,20 +27,18 @@ app.post('/api/webhook', (req, res) => {
 
 app.get('/api/poll', (req, res) => {
   console.log('Polling endpoint hit');
-  /*
   if (!cache.content) {
     return res.status(200).send({ message: 'No data available' });
   }
   res.status(200).send(cache);
-  */
 });
 
 // SSE endpoint with internal polling
 app.get('/api/sse', (req, res) => {
-  //res.setHeader('Content-Type', 'text/event-stream');
-  //res.setHeader('Cache-Control', 'no-cache');
-  //res.setHeader('Connection', 'keep-alive');
-  //res.flushHeaders();
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders();
 
   console.log('SSE connection established');
 
