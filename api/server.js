@@ -26,7 +26,7 @@ app.post('/api/webhook', (req, res) => {
 });
 
 app.get('/api/poll', (req, res) => {
-  console.log('Polling endpoint hit');
+  console.log('Polling cache');
   const sendData = () => {
     if (!cache.content) {
       res.status(200).send({ message: 'No data available' });
@@ -41,7 +41,8 @@ app.get('/api/poll', (req, res) => {
     console.log('Connection closed');
   });
   sendData();
-
+  await new Promise(r => setTimeout(r, 20000));
+  console.log('Polling exit');
 });
 
 // SSE endpoint with internal polling
