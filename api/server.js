@@ -18,12 +18,12 @@ app.post('/api/webhook', (req, res) => {
   const body = req.body;
   console.log('Webhook event received:', body);
 
-  // Store the content in the cache
-  cache = { content: body };
+  // Ensure the cache content has a 'message' property
+  cache = { content: { message: body.message || 'No message content' } };
   console.log('Cache updated:', cache);
 
   // Emit event with the updated content
-  const decodedContent = JSON.stringify({ content: body });
+  const decodedContent = JSON.stringify(cache);
   eventEmitter.emit('newWebhook', decodedContent);
 
   res.status(200).send('Webhook received');
