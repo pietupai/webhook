@@ -8,7 +8,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-// Serve static files : tarvitaan local index.html 
+// Serve static files
 app.use(express.static(path.join(__dirname, '../')));   // from root
 
 let cache = {}; // In-memory cache
@@ -46,10 +46,14 @@ app.get('/api/sse', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders();
 
   console.log('SSE connection established');
 
-  const keepAlive = setInterval(() => {  res.write(': keep-alive\n\n'); console.log('Keep-alive message sent'); }, 15000);
+  const keepAlive = setInterval(() => {
+    res.write(': keep-alive\n\n');
+    console.log('Keep-alive message sent');
+  }, 15000);
 
   const listener = () => {
     if (cache.content) {
@@ -59,7 +63,6 @@ app.get('/api/sse', (req, res) => {
     }
   };
 
-  eventEmitter.removeAllListeners('newWebhook');
   eventEmitter.on('newWebhook', listener);
 
   req.on('close', () => {
