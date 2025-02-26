@@ -44,20 +44,20 @@ app.get('/api/sse', (req, res) => {
 
   const keepAlive = setInterval(() => {
     res.write(': keep-alive\n\n');
-  }, 15000); // Reduce interval to keep connection alive
+  }, 5000); // Reduce interval to keep connection alive
 
-  // Function to poll the server and send updates to the client
-  const pollServer = () => {
-    console.log('Polling internally for updates');
+  const sendData = () => {
     if (cache.content) {
       const data = JSON.stringify(cache);
       console.log('Sending data to SSE client:', data);
       res.write(`data: ${data}\n\n`);
+    } else {
+      console.log('Cache content not available');
     }
   };
 
   // Poll the server every 5 seconds
-  const pollInterval = setInterval(pollServer, 10000);
+  const pollInterval = setInterval(sendData, 5000);
 
   req.on('close', () => {
     clearInterval(keepAlive);
@@ -66,7 +66,7 @@ app.get('/api/sse', (req, res) => {
   });
 
   // Send initial data if available
-  pollServer();
+  sendData();
 });
 
 const PORT = process.env.PORT || 3000;
