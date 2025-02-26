@@ -27,6 +27,7 @@ app.post('/api/webhook', (req, res) => {
     console.log('Got event data:', data);
     //res.write(`data: ${data}\n\n`);
   };
+  eventEmitter.removeAllListeners('newWebhook2');
   eventEmitter.on('newWebhook2', listener);
 
   // Emit event with the updated content
