@@ -18,8 +18,8 @@ app.post('/api/webhook', (req, res) => {
   const body = req.body;
   console.log('Webhook event received:', body);
 
-  // Ensure the cache content has a 'message' property
-  cache = { content: { message: body.message || 'No message content' } };
+  // Store the content in the cache
+  cache = { content: body };
   console.log('Cache updated:', cache);
 
   // Emit event with the updated content
@@ -51,7 +51,7 @@ app.get('/api/sse', (req, res) => {
   }, 15000);
 
   const sendData = () => {
-    if (cache.content) {
+    if (cache.content && cache.content.message !== 'No message content') {
       const data = JSON.stringify(cache);
       console.log('Sending data to SSE client:', data);
       res.write(`data: ${data}\n\n`);
@@ -66,7 +66,7 @@ app.get('/api/sse', (req, res) => {
     console.log('SSE connection closed');
   });
 
-  // Send initial data if available
+  // Send initial data if available and valid
   sendData();
 });
 
