@@ -65,6 +65,7 @@ app.get('/api/sse', (req, res) => {
     res.write(`data: ${data}\n\n`);
   };
 
+  eventEmitter.removeAllListeners('newWebhook');
   eventEmitter.on('newWebhook', listener);
 
   req.on('close', () => {
