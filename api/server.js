@@ -34,9 +34,9 @@ app.get('/api/poll', (req, res) => {
     if (!cache.content) {
       //res.status(200).send({ message: 'No data available' });
     } else {
-      if (data != LastData) {
+      if (cache != LastData) {
         res.status(200).send(cache);
-        LastData = data;
+        LastData = cache;
       };
       //cache = {};
     }
@@ -68,11 +68,11 @@ app.get('/api/sse', (req, res) => {
         res.write("message: No data available\n\n");
         console.log('Cache content not available');
     } else {
-        const data = JSON.stringify(cache);
-        if (data != LastData) {
+        if (cache != LastData) {
+          const data = JSON.stringify(cache);
           console.log('Sending data to SSE client:', data);
           res.write(`data: ${data}\n\n`);
-          LastData = data;
+          LastData = cache;
         };
         //cache = {};
     }
