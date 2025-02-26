@@ -42,7 +42,8 @@ app.get('/api/poll', (req, res) => {
     console.log('Connection closed');
   });
   sendData();
-  await sleep(20000);
+  //await sleep(20000);
+  (async () => await new Promise(resolve => setTimeout(resolve, 500)))();
   console.log('Polling exit');
 });
 
