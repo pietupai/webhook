@@ -27,11 +27,12 @@ app.post('/api/webhook', (req, res) => {
 
 app.get('/api/poll', (req, res) => {
   console.log('Polling endpoint hit');
+  /*
   if (!cache.content) {
     return res.status(200).send({ message: 'No data available' });
   }
   res.status(200).send(cache);
-  //cache = {};
+  */
 });
 
 // SSE endpoint with internal polling
