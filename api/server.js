@@ -46,7 +46,7 @@ app.get('/api/poll', (req, res) => {
   sendData();
   //await sleep(20000);
   //(async () => await new Promise(resolve => setTimeout(resolve, 600000)))();
-  Odota(60000);
+  Odota(30000);
   console.log('Polling exit');
 });
 
