@@ -19,7 +19,13 @@ app.post('/api/webhook', (req, res) => {
   console.log('Webhook event received:', body);
 
   // Store the content in the cache
-  cache = { content: { message: body.key || 'No message content' } }; // Adjust for the key-value structure
+  if (body.message) {
+    cache = { content: { message: body.message } };
+  } else if (body.key) {
+    cache = { content: { message: body.key } };
+  } else {
+    cache = { content: { message: 'No message content' } };
+  }
   console.log('Cache updated:', cache);
 
   // Emit event with the updated content
