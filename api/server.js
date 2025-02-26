@@ -8,7 +8,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-// Serve static files
 app.use(express.static(path.join(__dirname, '../')));   // from root
 
 let cache = {}; // In-memory cache
@@ -20,7 +19,7 @@ app.post('/api/webhook', (req, res) => {
 
   // Store the content in the cache
   cache = { content: body };
-  console.log('Cache updated:', cache); // Logging to track cache updates 
+  console.log('Cache updated:', cache);
 
   // Emit event with the updated content
   console.log('Emitting event: newWebhook');
@@ -32,8 +31,8 @@ app.post('/api/webhook', (req, res) => {
 });
 
 app.get('/api/poll', (req, res) => {
-  console.log('Polling endpoint hit'); // Log to ensure the endpoint is hit
-  console.log('Cache accessed:', cache); // Logging to track cache access
+  console.log('Polling endpoint hit');
+  console.log('Cache accessed:', cache);
   if (!cache.content) {
     console.log('No data available in cache');
     return res.status(200).send({ message: 'No data available' });
