@@ -20,7 +20,6 @@ app.post('/api/webhook', (req, res) => {
   cache.content = body;
   console.log('Cache updated:', cache.content); // Logging to track cache updates
 
-  // Emit event with the updated content
   console.log('Emitting event: cacheUpdated');
   eventEmitter.emit('cacheUpdated', cache.content);
 
@@ -30,11 +29,11 @@ app.post('/api/webhook', (req, res) => {
 app.get('/api/poll', (req, res) => {
   console.log('Polling endpoint hit'); // Log to ensure the endpoint is hit
   console.log('Cache accessed:', cache); // Logging to track cache access
-  if (!cache.content) {
+  if (!cache.content) { // Tarkistetaan, että cache.content on olemassa
     console.log('No data available in cache');
     return res.status(200).send({ message: 'No data available' });
   }
-  res.status(200).send(cache);
+  res.status(200).send(cache); // Palautetaan koko cache
 });
 
 // SSE endpoint
