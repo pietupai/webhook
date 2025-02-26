@@ -24,6 +24,7 @@ app.post('/api/webhook', (req, res) => {
   console.log('Cache updated:', cache); // Logging to track cache updates
 
   // Emit event with the updated content
+  const eventEmitter = new events.EventEmitter();
   console.log('Emitting event: newWebhook');
   const decodedContent = JSON.stringify(req.body);
   console.log("Emitting text: ", decodedContent);
