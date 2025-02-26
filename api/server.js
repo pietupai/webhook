@@ -8,7 +8,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-// Serve static files : tarvitaan local index.html
+// Serve static files : tarvitaan local index.html 
 //app.use(express.static(path.join(__dirname, '../public')));  //  from the 'public' directory
 app.use(express.static(path.join(__dirname, '../')));   // from root
 
