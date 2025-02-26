@@ -15,6 +15,7 @@ let cache = {}; // In-memory cache
 const eventEmitter = new events.EventEmitter();
 //function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 //async function Odota(milliseconds) {  await sleep(milliseconds) };
+const LastData = "x";
 
 app.post('/api/webhook', (req, res) => {
   const body = req.body;
@@ -67,6 +68,7 @@ app.get('/api/sse', (req, res) => {
         const data = JSON.stringify(cache);
         console.log('Sending data to SSE client:', data);
         res.write(`data: ${data}\n\n`);
+        LastData = data;
         //cache = {};
     }
   };
