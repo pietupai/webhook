@@ -29,6 +29,12 @@ app.post('/api/webhook', (req, res) => {
   console.log("Emitting text: ", decodedContent);
   eventEmitter.emit('newWebhook', decodedContent);
 
+  const listener = (data) => {
+    console.log('Got event data:', data);
+    //res.write(`data: ${data}\n\n`);
+  };
+  eventEmitter.on('newWebhook', listener);
+
   res.status(200).send('Webhook received');
 });
 
