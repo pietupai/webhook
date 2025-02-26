@@ -21,11 +21,10 @@
           return;
         }
 
-        const message = data.content ? data.content.message : undefined;
-        if (message) {
-          document.getElementById('content').innerText = `Message: ${message}`;
+        if (data.content && data.content.message) {
+          document.getElementById('content').innerText = `Message: ${data.content.message}`;
         } else {
-          console.error('Message property is undefined');
+          console.error('Message property is undefined or data structure is unexpected:', data);
         }
       };
 
