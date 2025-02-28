@@ -13,8 +13,6 @@ app.use(express.static(path.join(__dirname, '../')));
 
 let cache = {}; // In-memory cache
 const eventEmitter = new events.EventEmitter();
-//function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
-//async function Odota(milliseconds) {  await sleep(milliseconds) };
 let LastData = "x";
 
 app.post('/api/webhook', (req, res) => {
@@ -24,6 +22,12 @@ app.post('/api/webhook', (req, res) => {
   // Store the content in the cache
   cache = { content: body };
   console.log('Cache updated:', cache); // Logging to track cache updates
+
+  // Emit event with the updated content
+  console.log('Emitting event: newWebhook');
+  const decodedContent = JSON.stringify(req.body);
+  console.log("Emitting text: ", decodedContent);
+  eventEmitter.emit('newWebhook', decodedContent);
 
   res.status(200).send('Webhook received');
 });
@@ -35,20 +39,16 @@ app.get('/api/poll', (req, res) => {
       //res.status(200).send({ message: 'No data available' });
     } else {
       if (cache != LastData) {
-        LastData = cache;        
+        //LastData = cache;        
         res.status(200).send(cache);
       };
-      //cache = {};
+      cache = {};
     }
   };
-  // Poll the server every 5 seconds
-  const pollInterval = setInterval(sendData, 1000);
   req.on('close', () => {
-    clearInterval(pollInterval);
     console.log('Connection closed');
   });
   sendData();
-  //Odota(30000);
   console.log('Polling exit');
 });
 
@@ -63,32 +63,19 @@ app.get('/api/sse', (req, res) => {
 
   //const keepAlive = setInterval(() => { res.write(': keep-alive\n\n'); }, 15000); // Reduce interval to keep connection alive
 
-  const sendData = () => {
-    if (!cache.content) {
-        res.write("message: No data available\n\n");
-        console.log('Cache content not available');
-    } else {
-        if (cache != LastData) {
-          const data = JSON.stringify(cache);
-          console.log('Sending data to SSE client:', data);
-          res.write(`data: ${data}\n\n`);
-          LastData = cache;
-        };
-        //cache = {};
-    }
+  const listener = (data) => {
+    console.log('Sending data to SSE client:', data);
+    res.write(`data: ${data}\n\n`);
   };
-    
-  // Poll the server every 5 seconds
-  const pollInterval = setInterval(sendData, 5000);
+
+  eventEmitter.removeAllListeners('newWebhook');
+  eventEmitter.on('newWebhook', listener);
 
   req.on('close', () => {
-    //clearInterval(keepAlive);
-    clearInterval(pollInterval);
+    clearInterval(keepAlive);
+    eventEmitter.removeListener('newWebhook', listener);
     console.log('SSE connection closed');
   });
-
-  // Send initial data if available
-  sendData();
 });
 
 const PORT = process.env.PORT || 3000;
