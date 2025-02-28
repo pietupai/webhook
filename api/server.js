@@ -69,7 +69,7 @@ app.get('/api/sse', (req, res) => {
   }, 15000); // Keep connection alive
 
   const listener = (data) => {
-    console.log("Sending data to SSE client:" + data + " Date:" + DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_WITH_SECONDS));
+    console.log("Sending data to SSE client:" + data + " Time:" + DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_WITH_SECONDS));
     res.write(`data: ${data}\n\n`);
   };
 
