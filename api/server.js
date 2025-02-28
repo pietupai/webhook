@@ -61,11 +61,11 @@ app.get('/api/sse', (req, res) => {
   res.setHeader('Connection', 'keep-alive');
   res.flushHeaders();
 
-  console.log(`SSE connection established: ${DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_24_WITH_SECONDS)}`);
+  console.log(`SSE connection established: ${DateTime.now().setZone('Europe/Helsinki').toFormat('HH:mm:ss')}`);
 
   const keepAlive = setInterval(() => { 
-    console.log(`SSE connection keep-alive : ${DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_24_WITH_SECONDS)}`); 
-    res.write(`: keep-alive ${DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_24_WITH_SECONDS)}\n\n`); 
+    console.log(`SSE connection keep-alive : ${DateTime.now().setZone('Europe/Helsinki').toFormat('HH:mm:ss')}`); 
+    res.write(`: keep-alive ${DateTime.now().setZone('Europe/Helsinki').toFormat('HH:mm:ss')}\n\n`); 
   }, 15000); // Keep connection alive
 
   const listener = (data) => {
