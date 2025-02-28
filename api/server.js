@@ -39,7 +39,8 @@ app.get('/api/poll', (req, res) => {
       res.status(200).send({ message: 'No data available' });
     } else {
       if (cache != LastData) {
-        //LastData = cache;        
+        //LastData = cache;
+        console.log("Poll send data: ", cache);
         res.status(200).send(cache);
       };
       cache = {};
