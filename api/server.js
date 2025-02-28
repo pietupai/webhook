@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 const events = require('events');
+const { DateTime } = require('luxon');
 
 const app = express();
 app.use(bodyParser.json());
@@ -60,12 +61,15 @@ app.get('/api/sse', (req, res) => {
   res.setHeader('Connection', 'keep-alive');
   res.flushHeaders();
 
-  console.log('SSE connection established');
+  console.log(`SSE connection established: ${DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_WITH_SECONDS)}`);
 
-  const keepAlive = setInterval(() => { console.log('SSE connection : keep-alive'); res.write(': keep-alive\n\n'); }, 15000); // Keep connection alive
+  const keepAlive = setInterval(() => { 
+    console.log(`SSE connection keep-alive : ${DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_WITH_SECONDS)}`); 
+    res.write(`: keep-alive ${DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_WITH_SECONDS)}\n\n`); 
+  }, 15000); // Keep connection alive
 
   const listener = (data) => {
-    console.log('Sending data to SSE client:', data);
+    console.log("Sending data to SSE client:" + data + " Date:" + DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_WITH_SECONDS));
     res.write(`data: ${data}\n\n`);
   };
 
@@ -75,7 +79,7 @@ app.get('/api/sse', (req, res) => {
   req.on('close', () => {
     clearInterval(keepAlive);
     eventEmitter.removeListener('newWebhook', listener);
-    console.log('SSE connection closed');
+    console.log('SSE connection closed : ', DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_WITH_SECONDS));
   });
 });
 
