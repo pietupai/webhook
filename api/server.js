@@ -61,15 +61,15 @@ app.get('/api/sse', (req, res) => {
   res.setHeader('Connection', 'keep-alive');
   res.flushHeaders();
 
-  console.log(`SSE connection established: ${DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_WITH_SECONDS)}`);
+  console.log(`SSE connection established: ${DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_24_WITH_SECONDS)}`);
 
   const keepAlive = setInterval(() => { 
-    console.log(`SSE connection keep-alive : ${DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_WITH_SECONDS)}`); 
-    res.write(`: keep-alive ${DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_WITH_SECONDS)}\n\n`); 
+    console.log(`SSE connection keep-alive : ${DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_24_WITH_SECONDS)}`); 
+    res.write(`: keep-alive ${DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_24_WITH_SECONDS)}\n\n`); 
   }, 15000); // Keep connection alive
 
   const listener = (data) => {
-    console.log("Sending data to SSE client:" + data + " Time:" + DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_WITH_SECONDS));
+    console.log("Sending data to SSE client:" + data + " Time:" + DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_24_WITH_SECONDS));
     res.write(`data: ${data}\n\n`);
   };
 
@@ -79,7 +79,7 @@ app.get('/api/sse', (req, res) => {
   req.on('close', () => {
     clearInterval(keepAlive);
     eventEmitter.removeListener('newWebhook', listener);
-    console.log('SSE connection closed : ', DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_WITH_SECONDS));
+    console.log('SSE connection closed : ', DateTime.now().setZone('Europe/Helsinki').toLocaleString(DateTime.TIME_24_WITH_SECONDS));
   });
 });
 
