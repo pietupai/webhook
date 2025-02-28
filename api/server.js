@@ -62,7 +62,7 @@ app.get('/api/sse', (req, res) => {
 
   console.log('SSE connection established');
 
-  const keepAlive = setInterval(() => { res.write(': keep-alive\n\n'); }, 15000); // Reduce interval to keep connection alive
+  const keepAlive = setInterval(() => { console.log('SSE connection : keep-alive'); res.write(': keep-alive\n\n'); }, 15000); // Keep connection alive
 
   const listener = (data) => {
     console.log('Sending data to SSE client:', data);
