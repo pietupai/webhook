@@ -36,7 +36,7 @@ app.get('/api/poll', (req, res) => {
   console.log('Polling cache');
   const sendData = () => {
     if (!cache.content) {
-      //res.status(200).send({ message: 'No data available' });
+      res.status(200).send({ message: 'No data available' });
     } else {
       if (cache != LastData) {
         //LastData = cache;        
@@ -49,7 +49,7 @@ app.get('/api/poll', (req, res) => {
     console.log('Connection closed');
   });
   sendData();
-  console.log('Polling exit');
+  //console.log('Polling exit');
 });
 
 // SSE endpoint with internal polling
