@@ -1,106 +1,85 @@
+
+
 const express = require('express');
-const chromium = require('@sparticuz/chromium');
-const puppeteer = require('puppeteer-core');
-const lambdafs = require('lambdafs');
-const fs = require('fs');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const path = require('path');
+const events = require('events');
 
 const app = express();
-const port = 3000;
+app.use(bodyParser.json());
+app.use(cors());
 
-app.use(express.json());
+// Serve static files : tarvitaan local index.html 
+//app.use(express.static(path.join(__dirname, '../public')));  //  from the 'public' directory
+app.use(express.static(path.join(__dirname, '../')));   // from root
 
-app.get('/api/scrape', async (req, res) => {
-  const { url, intervals, skipCheck } = req.query;
+let cache = {}; // In-memory cache
+const eventEmitter = new events.EventEmitter();
 
-  if (!url || !intervals) {
-    return res.status(400).json({ error: 'Invalid input' });
-  }
+app.post('/api/webhook', (req, res) => {
+  const body = req.body;
+  console.log('Webhook event received:', body);
 
-  async function checkResult(page, intervalArray) {
-    const startTime = Date.now();
-    const results = [];
+  // Store the content in the cache
+  cache = { content: body };
+  console.log('Cache updated:', cache); // Logging to track cache updates 
 
-    for (let interval of intervalArray) {
-      const nextTime = startTime + interval * 1000;
-      while (Date.now() < nextTime) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
+  const listener = (data) => {
+    console.log('Got event data:', data);
+    //res.write(`data: ${data}\n\n`);
+  };
+  eventEmitter.removeAllListeners('newWebhook2');
+  eventEmitter.on('newWebhook2', listener);
 
-      const timeElapsed = (Date.now() - startTime) / 1000;
-      console.log(`Checking result at interval ${interval}s, Time Elapsed: ${timeElapsed.toFixed(2)}s`);
+  // Emit event with the updated content
+  console.log('Emitting event: newWebhook');
+  const decodedContent = JSON.stringify(req.body);
+  console.log("Emitting text: ", decodedContent);
+  eventEmitter.emit('newWebhook', decodedContent);
+  eventEmitter.emit('newWebhook2', decodedContent);
 
-      const checkInterval = 500; // 500 ms välein tarkistus
-      const timeout = 5000; // 5 sekunnin timeout
-
-      const checkStartTime = Date.now();
-      let result = 'No element found within timeout period';
-
-      while ((Date.now() - checkStartTime) < timeout) {
-        const { elementText, foundElement } = await page.evaluate((interval) => {
-          const elements are Array.from(document.querySelectorAll('body *'));
-          const element = elements.find(el => el.innerText.includes(`[*[***]*]Request made at ${interval}s:`));
-
-          if (element) {
-            const startIndex = element.innerText.indexOf(`[*[***]*]Request made at ${interval}s:`);
-            if (startIndex !== -1) {
-              const resultText = element.innerText.substring(startIndex, startIndex + 30);
-              return { elementText: resultText, foundElement: true };
-            }
-          }
-
-          return { elementText: 'null', foundElement: false };
-        }, interval);
-
-        if (foundElement) {
-          result = elementText;
-          break;
-        }
-
-        await new Promise(resolve => setTimeout(resolve, checkInterval));
-      }
-
-      results.push({ interval, timeElapsed, resultSnippet: result });
-    }
-
-    const log = results.map(r => `Interval: ${r.interval}s, Time Elapsed: ${r.timeElapsed.toFixed(2)}s, Result Snippet: ${r.resultSnippet}`).join('\n');
-    fs.writeFileSync('results.txt', log, 'utf8');
-
-    return results;
-  }
-
-  const intervalArray = intervals.split(',').map(Number);
-  const fullUrl = `${url}&intervals=${intervals}`;
-  console.log(`Received request: url=${fullUrl}, intervals=${intervals}`);
-
-  try {
-    await lambdafs.inflate('/var/task/node_modules/@sparticuz/chromium/bin/chromium.br');
-    await lambdafs.inflate('/var/task/node_modules/@sparticuz/chromium/bin/fonts.tar.br');
-
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
-    });
-    const page = await browser.newPage();
-    console.log(`Navigating to: ${fullUrl}`);
-    await page.goto(fullUrl, { waitUntil: 'networkidle0' });
-
-    if (skipCheck === 'true') {
-      console.log('Skipping checks as skipCheck is set to true');
-      await browser.close();
-      return res.json({ message: 'Scraping skipped', results: [] });
-    }
-
-    const results = await checkResult(page, intervalArray);
-    await browser.close();
-
-    res.json({ message: 'Scraping completed', results: results.map(r => ({ interval: r.interval, timeElapsed: r.timeElapsed })) });
-  } catch (error) {
-    console.error('Error during scraping:', error);
-    res.status(500).json({ error: error.message });
-  }
+  res.status(200).send('Webhook received');
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+app.get('/api/poll', (req, res) => {
+  console.log('Polling endpoint hit'); // Log to ensure the endpoint is hit
+  console.log('Cache accessed:', cache); // Logging to track cache access
+  if (!cache.content) {
+    console.log('No data available in cache');
+    return res.status(200).send({ message: 'No data available' });
+  }
+  res.status(200).send(cache);
 });
+
+// SSE endpoint
+app.get('/api/sse', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+
+  console.log('SSE connection established');
+
+  const keepAlive = setInterval(() => {  res.write(': keep-alive\n\n'); console.log('Keep-alive message sent'); }, 15000);
+
+  const listener = (data) => {
+    console.log('Sending data to SSE client:', data);
+    res.write(`data: ${data}\n\n`);
+  };
+
+  eventEmitter.removeAllListeners('newWebhook');
+  eventEmitter.on('newWebhook', listener);
+
+  req.on('close', () => {
+    clearInterval(keepAlive);
+    eventEmitter.removeListener('newWebhook', listener);
+    console.log('SSE connection closed');
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+module.exports = app;
